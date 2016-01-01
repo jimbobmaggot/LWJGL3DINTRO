@@ -1,5 +1,8 @@
 package lwjgl3dintro;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -7,6 +10,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 /**
  *
@@ -23,8 +28,24 @@ public class LWJGL3DINTRO
         cleanUp();
     }
 
+    public static Texture loadTexture(String key)
+    {
+        try
+        {
+            return TextureLoader.getTexture("png", new FileInputStream(new File("res/" + key + ".png")));
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(LWJGL3DINTRO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
     public static void gameLoop()
     {
+        Texture wood = loadTexture("wood");
+
         Camera cam = new Camera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, 1000);
         float x = 0;
 
@@ -47,12 +68,10 @@ public class LWJGL3DINTRO
             }
             if (left)
             {
-                //cam.rotateY(-0.01f);
                 cam.move(0.005f, 0);
             }
             if (right)
             {
-                //cam.rotateY(0.01f);
                 cam.move(-0.005f, 0);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
@@ -71,7 +90,7 @@ public class LWJGL3DINTRO
             {
                 glColor3f(1.0f, 0.5f, 0f);
                 glTranslatef(0, 0, -10);
-                //glRotatef(x, 1, 1, 0);
+                glRotatef(x, 1, 1, 0);
 
                 if ((forward && left) || (forward && right) || (backward && left) || (backward && right))
                 {
@@ -83,44 +102,70 @@ public class LWJGL3DINTRO
                     glRotatef(45, 0, 1, 0);
                 }
 
+                wood.bind();
+
                 glBegin(GL_QUADS);
                 {
                     //FrontFace
                     glColor3f(1f, 0f, 0f);
-                    glVertex3f(-1, -1, 1);
-                    glVertex3f(-1, 1, 1);
-                    glVertex3f(1, 1, 1);
-                    glVertex3f(1, -1, 1);
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, -1, 1); //bottomleft
+                    glTexCoord2f(0, 1);
+                    glVertex3f(-1, 1, 1); //up
+                    glTexCoord2f(1, 1);
+                    glVertex3f(1, 1, 1); //left
+                    glTexCoord2f(1, 0);
+                    glVertex3f(1, -1, 1); //down
                     //BackFace
                     glColor3f(0f, 1f, 0f);
-                    glVertex3f(-1, -1, -1);
-                    glVertex3f(-1, 1, -1);
-                    glVertex3f(1, 1, -1);
-                    glVertex3f(1, -1, -1);
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, -1, -1); //bottomleft
+                    glTexCoord2f(0, 1);
+                    glVertex3f(-1, 1, -1); //up
+                    glTexCoord2f(1, 1);
+                    glVertex3f(1, 1, -1); //left
+                    glTexCoord2f(1, 0);
+                    glVertex3f(1, -1, -1); //down
                     //BottomFace
                     glColor3f(0f, 0f, 1f);
-                    glVertex3f(-1, -1, -1);
-                    glVertex3f(-1, -1, 1);
-                    glVertex3f(-1, 1, 1);
-                    glVertex3f(-1, 1, -1);
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, -1, -1); //bottomleft
+                    glTexCoord2f(0, 1);
+                    glVertex3f(-1, -1, 1); //up
+                    glTexCoord2f(1, 1);
+                    glVertex3f(-1, 1, 1); //left
+                    glTexCoord2f(1, 0);
+                    glVertex3f(-1, 1, -1); //down
                     //TopFace
                     glColor3f(1f, 1f, 0f);
-                    glVertex3f(1, -1, -1);
-                    glVertex3f(1, -1, 1);
-                    glVertex3f(1, 1, 1);
-                    glVertex3f(1, 1, -1);
+                    glTexCoord2f(0, 0);
+                    glVertex3f(1, -1, -1); //bottomleft
+                    glTexCoord2f(0, 1);
+                    glVertex3f(1, -1, 1); //up
+                    glTexCoord2f(1, 1);
+                    glVertex3f(1, 1, 1); //left
+                    glTexCoord2f(1, 0);
+                    glVertex3f(1, 1, -1); //down
                     //LeftFace
                     glColor3f(0f, 1f, 1f);
-                    glVertex3f(-1, -1, -1);
-                    glVertex3f(1, -1, -1);
-                    glVertex3f(1, -1, 1);
-                    glVertex3f(-1, -1, 1);
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, -1, -1); //bottomleft
+                    glTexCoord2f(0, 1);
+                    glVertex3f(1, -1, -1); //up
+                    glTexCoord2f(1, 1);
+                    glVertex3f(1, -1, 1); //left
+                    glTexCoord2f(1, 0);
+                    glVertex3f(-1, -1, 1); //down
                     //RightFace
                     glColor3f(1f, 0f, 1f);
-                    glVertex3f(-1, 1, -1);
-                    glVertex3f(1, 1, -1);
-                    glVertex3f(1, 1, 1);
-                    glVertex3f(-1, 1, 1);
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, 1, -1); //bottomleft
+                    glTexCoord2f(0, 1);
+                    glVertex3f(1, 1, -1); //up
+                    glTexCoord2f(1, 1);
+                    glVertex3f(1, 1, 1); //left
+                    glTexCoord2f(1, 0);
+                    glVertex3f(-1, 1, 1); //down
 
                 }
                 glEnd();
