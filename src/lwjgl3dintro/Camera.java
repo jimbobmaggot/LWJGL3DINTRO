@@ -48,6 +48,8 @@ public class Camera
         glLoadIdentity();
         gluPerspective(getFov(), getAspect(), getNear(), getFar());
         glMatrixMode(GL_MODELVIEW);
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void useView()
@@ -216,6 +218,17 @@ public class Camera
     public void setFar(float far)
     {
         this.far = far;
+    }
+
+    public void move(float amt, float dir)
+    {
+        z += amt * Math.sin(Math.toRadians(ry + 90 * dir));
+        x += amt * Math.cos(Math.toRadians(ry + 90 * dir));
+    }
+
+    public void rotateY(float amt)
+    {
+        ry += amt;
     }
 
 }
